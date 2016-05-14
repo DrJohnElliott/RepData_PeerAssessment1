@@ -11,39 +11,57 @@ For this example all code will be displayed but it is not necessary.
 This project uses a data set provided on the Cousera web site, it was downloaded 
 on May-14-2016 at this URL: 
 https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
-
+The following libraies are used
+```{r, echo=TRUE}
+library(dplyr)
+library(ggplot2)
+```
 
 ## Loading and preprocessing the data
 
-* Read data into envioroment with "read.csv"
+* Create data set named "myData" by reading data file into envioroment with "read.csv"
         (assumes data set is located in the current working directory)
-* Create data set named "sum_Data" representing the total steps recorded each day using "tapply"
-```{r}
+    ```{r,echo = TRUE}
 myData <- read.csv("activity.csv", header = TRUE, sep = "," ,dec = "." )
+    ```
+* Create data set named "sum_Data" representing the total steps recorded each day using "tapply"
+    ```{r,echo = TRUE}
 sum_Data <- tapply(myData$steps, myData$date, sum)
+```
 
+* Create data set named "interval_Data" of the average number of steps of each interval, the original data set "myData" is grouped by interval using "grouped_by", the varible names are given better descriptive names using "rename" , then the data set is created using summarize.
+
+    ```{r,echo = TRUE}
+interval_Data <- group_by(myData, interval) %>%
+        rename(Average_Steps = steps, Interval = interval) %>%
+        summarize( Average_Steps = mean(Average_Steps, na.rm = TRUE))
 ```
 
 
 ## What is mean total number of steps taken per day?
-Inspect the data set by making a Histogram to show the distribution of the total steps each day 
+* Inspect the data set by making a Histogram to show the distribution of the total steps each day 
 
-```{r, echo=TRUE}
+    ```{r,echo = TRUE}
 hist(sum_Data, col = "blue", main = "Histogram of Total Steps per Day", xlab = "Number of Steps")
 ```
 
-Calculate Mean and Median of the daliy toal steps
-```{r, echo=TRUE}
+* Calculate Mean and Median of the daliy toal steps
+    ```{r,echo = TRUE}
 meanData <- as.integer(mean(sum_Data, na.rm = TRUE))
 medianData <- as.integer(median(sum_Data, na.rm = TRUE))
 
 ```
-* The mean of the total number of steps taken per day is: `r meanData`
-* The median of the total number of steps taken per day is: `r medianData`
+* The mean of the total number of steps taken per day is: **`r meanData`**
+* The median of the total number of steps taken per day is: **`r medianData`**
 
 ## What is the average daily activity pattern?
+* Create a plot of the average number of steps taken during each interval
+    ```{r,echo = TRUE}
+g <- ggplot( data = interval_Data, aes( Interval, Average_Steps) )
+g + geom_line(colour = "blue") + labs(title = "Time Series of Average Steps Taken") +
+        labs(x = "Interval  [5 minutes]", y = "Number of Steps Taken")
 
-
+```
 
 ## Imputing missing values
 
