@@ -24,13 +24,12 @@ sum_Data <- tapply(myData$steps, myData$date, sum)
 
 ```
 
+
+## What is mean total number of steps taken per day?
 Inspect the data set by making a Histogram to show the distribution of the total steps each day 
 ```{r, echo=TRUE}
 hist(sum_Data, col = "blue", main = "Histogram of Total Steps per Day", xlab = "Number of Steps")
 ```
-
-## What is mean total number of steps taken per day?
-
 
 
 ## What is the average daily activity pattern?
