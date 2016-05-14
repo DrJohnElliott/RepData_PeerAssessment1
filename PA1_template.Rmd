@@ -5,10 +5,29 @@ output:
     keep_md: true
 ---
 
+## Class project Overview
+This project demonstrates the ability to create a document with embedded code.
+For this example all code will be displayed but it is not necessary.
+This project uses a data set provided on the Cousera web site, it was downloaded 
+on May-14-2016 at this URL: 
+https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
+
 
 ## Loading and preprocessing the data
 
+* Read data into envioroment with "read.csv"
+        (assumes data set is located in the current working directory)
+* Create data set named "sum_Data" representing the total steps recorded each day using "tapply"
+```{r}
+myData <- read.csv("activity.csv", header = TRUE, sep = "," ,dec = "." )
+sum_Data <- tapply(myData$steps, myData$date, sum)
 
+```
+
+Inspect the data set by making a Histogram to show the distribution of the total steps each day 
+```{r, echo=TRUE}
+hist(sum_Data, col = "blue", main = "Histogram of Total Steps per Day", xlab = "Number of Steps")
+```
 
 ## What is mean total number of steps taken per day?
 
