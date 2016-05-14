@@ -27,10 +27,19 @@ sum_Data <- tapply(myData$steps, myData$date, sum)
 
 ## What is mean total number of steps taken per day?
 Inspect the data set by making a Histogram to show the distribution of the total steps each day 
+
 ```{r, echo=TRUE}
 hist(sum_Data, col = "blue", main = "Histogram of Total Steps per Day", xlab = "Number of Steps")
 ```
 
+Calculate Mean and Median of the daliy toal steps
+```{r, echo=TRUE}
+meanData <- as.integer(mean(sum_Data, na.rm = TRUE))
+medianData <- as.integer(median(sum_Data, na.rm = TRUE))
+
+```
+* The mean of the total number of steps taken per day is: `r meanData`
+* The median of the total number of steps taken per day is: `r medianData`
 
 ## What is the average daily activity pattern?
 
