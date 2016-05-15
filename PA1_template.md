@@ -30,7 +30,9 @@ Create data set named "myData" by reading data file into envioroment with "read.
 ```
 
 
-Create data set named "interval_Data" of the average number of steps of each interval, the original data set "myData" is grouped by interval using "grouped_by", the varible names are given better descriptive names using "rename" , then the data set is created using summarize.
+Create data set named "interval_Data" of the average number of steps of each interval, 
+the original data set "myData" is grouped by interval using "grouped_by", the varible 
+names are given better descriptive names using "rename" , then the data set is created using summarize.
 
 
 ```r
