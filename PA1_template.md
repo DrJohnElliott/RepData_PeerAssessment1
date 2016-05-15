@@ -6,7 +6,7 @@ For this example all code will be displayed but it is not necessary.
 This project uses a data set provided on the Cousera web site, it was downloaded 
 on May-14-2016 at this URL: 
 https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
-The following libraies are used: **dplyr, ggplot2**
+The following libraies are used: **dplyr, ggplot2, lattice**
 
 
 ```r
@@ -16,6 +16,10 @@ The following libraies are used: **dplyr, ggplot2**
 
 ```
 ## Warning: package 'ggplot2' was built under R version 3.2.4
+```
+
+```r
+        library(lattice, quietly = TRUE ,warn.conflicts = FALSE)
 ```
 
 ## Loading and preprocessing the data
@@ -76,7 +80,7 @@ Create a plot of the average number of steps taken during each interval
 
 
 
-Find the interval with the maximum value
+Find the interval with the maximum average value
 
 ```r
 maxValue <- max(interval_Data$Average_Steps, na.rm = TRUE)
@@ -143,3 +147,56 @@ Calculate Mean and Median of the daliy toal steps
 * The median of the total number of steps taken per day is: **10766**
 
 ## Are there differences in activity patterns between weekdays and weekends?
+Determine name of weekdays using "weekdays"
+
+```r
+completeData$date <- as.Date.factor(completeData$date)
+which_Day <- weekdays(completeData$date)
+```
+
+Update dates by replacing date names with "Weekday" or "Weekend" 
+
+```r
+for(i in 1:length(which_Day)){
+        if(as.character(which_Day[i])== "Saturday" | as.character(which_Day[i])== "Sunday"){
+                which_Day[i] <- "Weekend"       
+                
+        }else{
+                which_Day[i] <- "Weekday"
+        }
+}
+```
+
+
+Merge updated dates into dataset and transform into data.frame
+
+```r
+which_Day <- factor(which_Day,levels=c('Weekend', 'Weekday')) 
+completeData$date <- which_Day
+dateData <- data.frame(completeData)
+```
+
+
+Create dataset of interval averages with updated date names
+
+```r
+weekDay_Data= subset(dateData,date == "Weekday")
+weekEnd_Data= subset(dateData,date == "Weekend")
+week1 = aggregate(steps ~ interval + date, data = weekDay_Data, FUN = "mean" )
+week2 = aggregate(steps ~ interval + date, data = weekEnd_Data, FUN = "mean" )
+combinedData <- rbind.data.frame(week1,week2)
+```
+
+
+Plot data to compare weekend and weekday interval averages
+
+```r
+xyplot(steps ~ interval | date, data = combinedData, layout = c(1,2),type = "l")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-20-1.png)
+
+
+
+
+
