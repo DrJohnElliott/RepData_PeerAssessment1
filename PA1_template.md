@@ -1,8 +1,8 @@
 # Reproducible Research: Peer Assessment 1
 
 ## Class project Overview
-This project demonstrates the ability to create a document with embedded code.
-For this example all code will be displayed but it is not necessary.
+This project demonstrates the ability to create a document with embedded code and graphics.
+For this example all code and graphics will be displayed.
 This project uses a data set provided on the Cousera web site, it was downloaded 
 on May-14-2016 at this URL: 
 https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
