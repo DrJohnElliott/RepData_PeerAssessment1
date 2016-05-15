@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 ## Class project Overview
 This project demonstrates the ability to create a document with embedded code.
@@ -13,23 +8,30 @@ on May-14-2016 at this URL:
 https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
 The following libraies are used: **dplyr, ggplot2**
 
-```{r,echo = TRUE}
+
+```r
         library(dplyr, quietly = TRUE ,warn.conflicts = FALSE)
         library(ggplot2, quietly = TRUE ,warn.conflicts = FALSE)
-    ```
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.2.4
+```
 
 ## Loading and preprocessing the data
 
 Create data set named "myData" by reading data file into envioroment with "read.csv"
         (assumes data set is located in the current working directory)
-```{r,echo = TRUE}
+
+```r
         myData <- read.csv("activity.csv", header = TRUE, sep = "," ,dec = "." )
-    ```
+```
 
 
 Create data set named "interval_Data" of the average number of steps of each interval, the original data set "myData" is grouped by interval using "grouped_by", the varible names are given better descriptive names using "rename" , then the data set is created using summarize.
 
-```{r,echo = TRUE}
+
+```r
         interval_Data <- group_by(myData, interval) %>%
                 rename(Average_Steps = steps, Interval = interval) %>%
                         summarize( Average_Steps = mean(Average_Steps, na.rm = TRUE))
@@ -38,65 +40,75 @@ Create data set named "interval_Data" of the average number of steps of each int
 
 ## What is mean total number of steps taken per day?
 Create data set named "sum_Data" representing the total steps recorded each day using "tapply"
-```{r,echo = TRUE}
+
+```r
         sum_Data <- tapply(myData$steps, myData$date, sum)
 ```
 
 Inspect the data set by making a Histogram to show the distribution of the total steps each day 
 
-```{r,echo = TRUE}
+
+```r
         hist(sum_Data, col = "blue", main = "Histogram of Total Steps per Day", xlab = "Number of Steps")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)
+
 Calculate Mean and Median of the daliy toal steps
-```{r,echo = TRUE}
+
+```r
         meanData <- as.integer(mean(sum_Data, na.rm = TRUE))
         medianData <- as.integer(median(sum_Data, na.rm = TRUE))
-
 ```
-* The mean of the total number of steps taken per day is: **`r meanData`**
-* The median of the total number of steps taken per day is: **`r medianData`**
+* The mean of the total number of steps taken per day is: **10766**
+* The median of the total number of steps taken per day is: **10765**
 
 ## What is the average daily activity pattern?
 Create a plot of the average number of steps taken during each interval
-```{r,echo = TRUE}
+
+```r
         g <- ggplot( data = interval_Data, aes( Interval, Average_Steps) )
         g + geom_line(colour = "blue") + labs(title = "Time Series of Average Steps Taken") +
         labs(x = "Interval  [5 minutes]", y = "Number of Steps Taken")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)
+
 
 
 Find the interval with the maximum value
-```{r, echo=TRUE}
+
+```r
 maxValue <- max(interval_Data$Average_Steps, na.rm = TRUE)
 maxInterval <- interval_Data$Interval[interval_Data$Average_Steps==maxValue] 
-
 ```
-* The interval with the maxium value is: **`r maxInterval`**
+* The interval with the maxium value is: **835**
 
 ## Imputing missing values
 
 Calculate total number of missing values "NA's" in the data set using "is.na"
-```{r,echo = TRUE}
+
+```r
 missing <- sum(is.na(myData$steps))
 ```
-*  The total number of missing values in the data is: **`r missing`**
+*  The total number of missing values in the data is: **2304**
 
 Create new data set named "completeData" 
-```{r,echo=TRUE}
-completeData <- myData
 
+```r
+completeData <- myData
 ```
 
 Find NA's in data set "completeData" 
-```{r,echo=TRUE}
+
+```r
 whereNA <- is.na(completeData$steps)
 ```
 
 
 Replace NA's with interval average from the data set "interval_Data"
-```{r,echo=TRUE}
+
+```r
 for(i in 1:length(whereNA)){
         if(whereNA[i] == TRUE){
                 myInterval <- completeData$interval[i]
@@ -107,23 +119,27 @@ for(i in 1:length(whereNA)){
 ```
 
 Create data set named "newSum_Data" representing the total steps recorded each day using "tapply"
-```{r,echo = TRUE}
+
+```r
         newSum_Data <- tapply(completeData$steps, completeData$date, sum)
 ```
 
 Inspect the data set by making a Histogram to show the distribution of the total steps each day 
 
-```{r,echo = TRUE}
+
+```r
         hist(newSum_Data, col = "blue", main = "Histogram of Total Steps per Day", xlab = "Number of Steps")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-14-1.png)
+
 Calculate Mean and Median of the daliy toal steps
-```{r,echo = TRUE}
+
+```r
         new_meanData <- as.integer(mean(newSum_Data, na.rm = TRUE))
         new_medianData <- as.integer(median(newSum_Data, na.rm = TRUE))
-
 ```
-* The mean of the total number of steps taken per day is: **`r new_meanData`**
-* The median of the total number of steps taken per day is: **`r new_medianData`**
+* The mean of the total number of steps taken per day is: **10766**
+* The median of the total number of steps taken per day is: **10766**
 
 ## Are there differences in activity patterns between weekdays and weekends?
