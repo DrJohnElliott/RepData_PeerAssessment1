@@ -6,20 +6,18 @@ For this example all code will be displayed but it is not necessary.
 This project uses a data set provided on the Cousera web site, it was downloaded 
 on May-14-2016 at this URL: 
 https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
-The following libraies are used: **dplyr, ggplot2, lattice**
+
+The following libraies are used: **dplyr, lattice and ggplot2**
 
 
 ```r
         library(dplyr, quietly = TRUE ,warn.conflicts = FALSE)
+        library(lattice, quietly = TRUE ,warn.conflicts = FALSE)
         library(ggplot2, quietly = TRUE ,warn.conflicts = FALSE)
 ```
 
 ```
 ## Warning: package 'ggplot2' was built under R version 3.2.4
-```
-
-```r
-        library(lattice, quietly = TRUE ,warn.conflicts = FALSE)
 ```
 
 ## Loading and preprocessing the data
@@ -46,14 +44,15 @@ Create data set named "interval_Data" of the average number of steps of each int
 Create data set named "sum_Data" representing the total steps recorded each day using "tapply"
 
 ```r
-        sum_Data <- tapply(myData$steps, myData$date, sum)
+        sum_Data <- tapply(myData$steps, myData$date, sum, na.rm=TRUE)
 ```
 
 Inspect the data set by making a Histogram to show the distribution of the total steps each day 
 
 
 ```r
-        hist(sum_Data, col = "blue", main = "Histogram of Total Steps per Day", xlab = "Number of Steps")
+        hist(sum_Data, col = "blue", main = "Histogram of Total Steps per Day", 
+                xlab = "Number of Steps", breaks = 10)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)
@@ -64,8 +63,8 @@ Calculate Mean and Median of the daliy toal steps
         meanData <- as.integer(mean(sum_Data, na.rm = TRUE))
         medianData <- as.integer(median(sum_Data, na.rm = TRUE))
 ```
-* The mean of the total number of steps taken per day is: **10766**
-* The median of the total number of steps taken per day is: **10765**
+* The mean of the total number of steps taken per day is: **9354**
+* The median of the total number of steps taken per day is: **10395**
 
 ## What is the average daily activity pattern?
 Create a plot of the average number of steps taken during each interval
@@ -83,8 +82,8 @@ Create a plot of the average number of steps taken during each interval
 Find the interval with the maximum average value
 
 ```r
-maxValue <- max(interval_Data$Average_Steps, na.rm = TRUE)
-maxInterval <- interval_Data$Interval[interval_Data$Average_Steps==maxValue] 
+        maxValue <- max(interval_Data$Average_Steps, na.rm = TRUE)
+        maxInterval <- interval_Data$Interval[interval_Data$Average_Steps==maxValue] 
 ```
 * The interval with the maxium value is: **835**
 
@@ -93,20 +92,20 @@ maxInterval <- interval_Data$Interval[interval_Data$Average_Steps==maxValue]
 Calculate total number of missing values "NA's" in the data set using "is.na"
 
 ```r
-missing <- sum(is.na(myData$steps))
+        missing <- sum(is.na(myData$steps))
 ```
 *  The total number of missing values in the data is: **2304**
 
 Create new data set named "completeData" 
 
 ```r
-completeData <- myData
+        completeData <- myData
 ```
 
 Find NA's in data set "completeData" 
 
 ```r
-whereNA <- is.na(completeData$steps)
+        whereNA <- is.na(completeData$steps)
 ```
 
 
@@ -132,7 +131,7 @@ Inspect the data set by making a Histogram to show the distribution of the total
 
 
 ```r
-        hist(newSum_Data, col = "blue", main = "Histogram of Total Steps per Day", xlab = "Number of Steps")
+        hist(newSum_Data, col = "blue", main = "Histogram of Total Steps per Day", xlab = "Number of Steps", breaks = 10)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-14-1.png)
@@ -150,8 +149,8 @@ Calculate Mean and Median of the daliy toal steps
 Determine name of weekdays using "weekdays"
 
 ```r
-completeData$date <- as.Date.factor(completeData$date)
-which_Day <- weekdays(completeData$date)
+        completeData$date <- as.Date.factor(completeData$date)
+        which_Day <- weekdays(completeData$date)
 ```
 
 Update dates by replacing date names with "Weekday" or "Weekend" 
@@ -171,27 +170,27 @@ for(i in 1:length(which_Day)){
 Merge updated dates into dataset and transform into data.frame
 
 ```r
-which_Day <- factor(which_Day,levels=c('Weekend', 'Weekday')) 
-completeData$date <- which_Day
-dateData <- data.frame(completeData)
+        which_Day <- factor(which_Day,levels=c('Weekend', 'Weekday')) 
+        completeData$date <- which_Day
+        dateData <- data.frame(completeData)
 ```
 
 
 Create dataset of interval averages with updated date names
 
 ```r
-weekDay_Data= subset(dateData,date == "Weekday")
-weekEnd_Data= subset(dateData,date == "Weekend")
-week1 = aggregate(steps ~ interval + date, data = weekDay_Data, FUN = "mean" )
-week2 = aggregate(steps ~ interval + date, data = weekEnd_Data, FUN = "mean" )
-combinedData <- rbind.data.frame(week1,week2)
+        weekDay_Data= subset(dateData,date == "Weekday")
+        weekEnd_Data= subset(dateData,date == "Weekend")
+        week1 = aggregate(steps ~ interval + date, data = weekDay_Data, FUN = "mean" )
+        week2 = aggregate(steps ~ interval + date, data = weekEnd_Data, FUN = "mean" )
+        combinedData <- rbind.data.frame(week1,week2)
 ```
 
 
 Plot data to compare weekend and weekday interval averages
 
 ```r
-xyplot(steps ~ interval | date, data = combinedData, layout = c(1,2),type = "l")
+        xyplot(steps ~ interval | date, data = combinedData, layout = c(1,2),type = "l")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-20-1.png)
