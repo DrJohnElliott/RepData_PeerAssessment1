@@ -23,9 +23,14 @@ The following libraries are used: **dplyr, lattice and ggplot2**
 ## Loading and preprocessing the data
 
 1. Create data set named "myData" by reading data file into environment with "read.csv" 
-           (assumes data set is located in the current working directory)
+           (data set is saved in the current working directory)
 ```{r,echo = TRUE}
-        myData <- read.csv("activity.csv", header = TRUE, sep = "," ,dec = "." )
+        temp <- tempfile()
+        download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip", 
+              temp, mode="wb")
+        con <- unzip(temp, "activity.csv")
+        myData <- read.csv(con, header = TRUE, sep = "," ,dec = "." )
+        unlink(temp)
     ```
 
 

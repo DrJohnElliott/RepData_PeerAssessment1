@@ -124,9 +124,14 @@ $(document).ready(function () {
 <div id="loading-and-preprocessing-the-data" class="section level2">
 <h2>Loading and preprocessing the data</h2>
 <ol style="list-style-type: decimal">
-<li>Create data set named “myData” by reading data file into environment with “read.csv” (assumes data set is located in the current working directory)</li>
+<li>Create data set named “myData” by reading data file into environment with “read.csv” (data set is saved in the current working directory)</li>
 </ol>
-<pre class="r"><code>        myData &lt;- read.csv(&quot;activity.csv&quot;, header = TRUE, sep = &quot;,&quot; ,dec = &quot;.&quot; )</code></pre>
+<pre class="r"><code>        temp &lt;- tempfile()
+        download.file(&quot;https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip&quot;, 
+              temp, mode=&quot;wb&quot;)
+        con &lt;- unzip(temp, &quot;activity.csv&quot;)
+        myData &lt;- read.csv(con, header = TRUE, sep = &quot;,&quot; ,dec = &quot;.&quot; )
+        unlink(temp)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Create data set named “interval_Data” of the average number of steps of each interval, the original data set “myData” is grouped by interval using “grouped_by”, the variable names are given better descriptive names using “rename” , then the averages are created using summarize.</li>
 </ol>
